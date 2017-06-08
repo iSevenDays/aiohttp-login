@@ -69,13 +69,38 @@ async def registration(request):
 
     while request.method == 'POST' and await form.validate():
 
+        user_ip = get_client_ip(request)
+
+        if cfg.INVISIBLE_RECAPTCHA_ENABLED:
+            post_dict = await request.post()
+            recaptcha_response = post_dict.get('g-recaptcha-response', None)
+            if recaptcha_response is None:
+                log.error('Recaptcha code is not found')
+                flash.error(request, cfg.MSG_RECAPTCHA_INCORRECT)
+                return redirect('auth_registration')
+
+            async with ClientSession(loop=request.app.loop) as session:
+                query = {'secret': cfg.INVISIBLE_RECAPTCHA_SITE_SECRET,
+                         'response': recaptcha_response,
+                         'remote_ip': user_ip}
+                async with session.post('https://www.google.com/recaptcha/api/siteverify',
+                                        params=query) as response:
+                    try:
+                        json_response = await response.json()
+                        success = json_response['success']
+                        if success is not True:
+                            flash.error(request, cfg.MSG_RECAPTCHA_INCORRECT)
+                            return redirect('auth_registration')
+                    except Exception as e:
+                        log.error('Recaptcha verify failed', exc_info=e)
+
         user = await db.create_user({
             'name': form.email.data.split('@')[0],
             'email': form.email.data,
             'password': encrypt_password(form.password.data),
             'status': ('confirmation' if cfg.REGISTRATION_CONFIRMATION_REQUIRED
                        else 'active'),
-            'created_ip': get_client_ip(request),
+            'created_ip': user_ip,
         })
 
         if not cfg.REGISTRATION_CONFIRMATION_REQUIRED:

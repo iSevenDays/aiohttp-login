@@ -5,37 +5,53 @@
 {% block auth_title %}Registration{% endblock %}
 
 {% block auth_content %}
-    {% include 'aiohttp_login/bootstrap-4/styles.html' %}
+{% include 'aiohttp_login/bootstrap-4/styles.html' %}
 
-	<form onsubmit="this['submit'].disabled=true" action="" method="post" class="auth-form">
-        <h1>Registration</h1>
+{% if auth.cfg.INVISIBLE_RECAPTCHA_ENABLED %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script>
+    function onSubmit(token) {
+        document.getElementById("auth-form").submit();
+    }
+</script>
+{% endif %}
 
-        <fieldset>
-            {{ form_field(auth.form.email) }}
-            {{ form_password_field(auth.form.password, auth.cfg) }}
-            {{ form_field(auth.form.confirm, oninput="auth_check_password_matching(this)") }}
-        </fieldset>
-		{{ auth.form.csrf_token }}
+<form onsubmit="this['submit'].disabled=true" action="" method="post" class="auth-form" id="auth-form">
+    <h1>Registration</h1>
 
-		<button type="submit"
-				name="submit"
-				class="btn btn-primary btn-block"
-				>Register</button>
 
-		{% include 'aiohttp_login/bootstrap-4/social_auth_buttons.html' %}
+    <fieldset>
+        {{ form_field(auth.form.email) }}
+        {{ form_password_field(auth.form.password, auth.cfg) }}
+        {{ form_field(auth.form.confirm, oninput="auth_check_password_matching(this)") }}
+    </fieldset>
+    {{ auth.form.csrf_token }}
 
-        <div style="text-align:right; margin-top:30px">
-            <a href="{{ auth.url_for('auth_login') }}">Already have an account?</a>
-        </div>
-	</form>
+    <button type="submit" name="submit_btn"
+            {% if auth.cfg.INVISIBLE_RECAPTCHA_ENABLED %}
+            class="btn btn-primary btn-block g-recaptcha"
+            data-sitekey="{{ auth.cfg.INVISIBLE_RECAPTCHA_SITE_KEY }}"
 
-    <script>
-		function auth_check_password_matching(input) {
-			if (input.value != document.getElementById('password').value) {
-                input.setCustomValidity('{{ auth.form.equal_to_message }}');
-			} else {
-				input.setCustomValidity('');
-			}
-		}
-    </script>
+            {% else %}
+            class="btn btn-primary btn-block"
+            {% endif %}
+    >Register
+    </button>
+
+    {% include 'aiohttp_login/bootstrap-4/social_auth_buttons.html' %}
+
+    <div style="text-align:right; margin-top:30px">
+        <a href="{{ auth.url_for('auth_login') }}">Already have an account?</a>
+    </div>
+</form>
+
+<script>
+    function auth_check_password_matching(input) {
+        if (input.value !== document.getElementById('password').value) {
+            input.setCustomValidity('{{ auth.form.equal_to_message }}');
+        } else {
+            input.setCustomValidity('');
+        }
+    }
+</script>
 {% endblock %}
