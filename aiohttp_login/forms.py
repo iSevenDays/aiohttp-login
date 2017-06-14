@@ -53,16 +53,16 @@ def create():
         return value
 
     class Registration(BaseForm):
-        email = EmailField('Email', [
+        email = EmailField(cfg.FORM_INPUT_EMAIL_MSG, [
             Required(),
             Email(),
         ])
-        password = PasswordField('Password', [
+        password = PasswordField(cfg.FORM_INPUT_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
             EqualTo('confirm', message=cfg.MSG_PASSWORDS_NOT_MATCH),
         ])
-        confirm = PasswordField('Repeat password', [
+        confirm = PasswordField(cfg.FORM_INPUT_REPEAT_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
         ])

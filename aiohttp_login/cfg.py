@@ -36,6 +36,10 @@ DEFAULTS = {
     'INVISIBLE_RECAPTCHA_SITE_KEY': None,
     'INVISIBLE_RECAPTCHA_SITE_SECRET': None,
 
+    'FORM_INPUT_EMAIL_MSG': 'Email',
+    'FORM_INPUT_PASSWORD_MSG': 'Password',
+    'FORM_INPUT_REPEAT_PASSWORD_MSG': 'Repeat password',
+
     # email confirmation links lifetime in days
     'REGISTRATION_CONFIRMATION_LIFETIME': 5,
     'RESET_PASSWORD_CONFIRMATION_LIFETIME': 5,
