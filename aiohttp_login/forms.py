@@ -89,17 +89,17 @@ def create():
             return False
 
     class Login(BaseForm):
-        email = EmailField('Email', [
+        email = EmailField(cfg.FORM_INPUT_EMAIL_MSG, [
             Required(),
             Email(),
         ])
-        password = PasswordField('Password', [
+        password = PasswordField(cfg.FORM_INPUT_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
         ])
 
     class ResetPasswordRequest(BaseForm):
-        email = EmailField('Email', [
+        email = EmailField(cfg.FORM_INPUT_EMAIL_MSG, [
             Required(),
             Email(),
         ])
@@ -122,16 +122,16 @@ def create():
             return super().validate() and self.email.data != cur_email
 
     class ChangePassword(BaseForm):
-        cur_password = PasswordField('Current password', [
+        cur_password = PasswordField(cfg.FORM_INPUT_CURRENT_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
         ])
-        new_password = PasswordField('New password', [
+        new_password = PasswordField(cfg.FORM_INPUT_NEW_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
             EqualTo('confirm', message=cfg.MSG_PASSWORDS_NOT_MATCH),
         ])
-        confirm = PasswordField('Repeat new password', [
+        confirm = PasswordField(cfg.FORM_INPUT_REPEAT_NEW_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
         ])
