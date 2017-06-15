@@ -105,18 +105,18 @@ def create():
         ])
 
     class ResetPassword(BaseForm):
-        password = PasswordField('New password', [
+        password = PasswordField(cfg.FORM_INPUT_NEW_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
             EqualTo('confirm', message=cfg.MSG_PASSWORDS_NOT_MATCH),
         ])
-        confirm = PasswordField('Repeat password', [
+        confirm = PasswordField(cfg.FORM_INPUT_REPEAT_PASSWORD_MSG, [
             Required(),
             Length(*cfg.PASSWORD_LEN),
         ])
 
     class ChangeEmail(BaseForm):
-        email = EmailField('New email', [Email()])
+        email = EmailField(cfg.FORM_INPUT_NEW_EMAIL_MSG, [Email()])
 
         def validate(self, cur_email):
             return super().validate() and self.email.data != cur_email

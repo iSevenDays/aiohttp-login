@@ -40,6 +40,7 @@ DEFAULTS = {
     'FORM_INPUT_PASSWORD_MSG': 'Password',
     'FORM_INPUT_REPEAT_PASSWORD_MSG': 'Repeat password',
     'FORM_INPUT_NEW_PASSWORD_MSG': 'New password',
+    'FORM_INPUT_NEW_EMAIL_MSG': 'New email',
     'FORM_INPUT_CURRENT_PASSWORD_MSG': 'Current password',
     'FORM_INPUT_REPEAT_NEW_PASSWORD_MSG': 'Repeat new password',
 
