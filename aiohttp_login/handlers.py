@@ -2,6 +2,7 @@ import logging
 
 from aiohttp_jinja2 import render_template
 from aiohttp_session import get_session
+from aiohttp import ClientSession
 
 from .cfg import cfg
 from . import forms
