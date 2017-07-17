@@ -56,7 +56,7 @@ async def vkontakte(request):
         url = URL('https://api.vk.com/method/users.get').with_query(
             access_token=data['access_token'],
             uid=data['user_id'],
-            fields='nickname,screen_name'
+            fields='first_name,nickname,screen_name'
         )
         async with client.get(url) as resp:
             profile = await resp.json()
@@ -64,8 +64,8 @@ async def vkontakte(request):
     assert 'response' in profile, profile
     profile = profile['response'][0]
     log.debug('vk profile: %s', pformat(profile))
-    name = (profile['screen_name'] or profile['nickname']
-            or profile['first_name'])
+    name = (profile['first_name'] or profile['nickname']
+            or profile['screen_name'])
     if not name and 'email' in data:
         name = data['email'].split('@')[0]
     if not name:
