@@ -30,24 +30,25 @@ async def social(request):
         if user:
             break
 
+        # try to find user by email
         if data['email']:
-            # try to find user by email
             user = await db.get_user({'email': data['email']})
             if user:
                 await db.update_user(user, {provider: data['user_id']})
                 break
 
-            # register new user
-            password = get_random_string(*cfg.PASSWORD_LEN)
-            user = await db.create_user({
-                'name': data['name'],
-                'email': data['email'],
-                'password': encrypt_password(password),
-                'status': 'active',
-                'created_ip': get_client_ip(request),
-                provider: data['user_id'],
-            })
-            break
+        # register new user
+        password = get_random_string(*cfg.PASSWORD_LEN)
+        query = {
+            'name': data['name'],
+            'password': encrypt_password(password),
+            'status': 'active',
+            'created_ip': get_client_ip(request),
+            provider: data['user_id'],
+        }
+        if data['email']:
+            query['email'] = data['email']
+        user = await db.create_user(query)
         break
 
     if user:
